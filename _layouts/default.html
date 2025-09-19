@@ -1,412 +1,78 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Sigma Skibidi Rizz — Demo (No External Links)</title>
-<style>
-  :root{
-    --bg1:#0f1226;
-    --bg2:#0b0d14;
-    --accent:#7cf2ff;
-    --accent2:#ff77d6;
-    --neon:#8affc1;
-    --muted:#9aa3b2;
-    --glass: rgba(255,255,255,0.04);
-  }
-  html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;}
-  body{
-    background: radial-gradient(1200px 600px at 10% 20%, rgba(124,242,255,0.04), transparent),
-                radial-gradient(1000px 500px at 90% 80%, rgba(255,119,214,0.04), transparent),
-                linear-gradient(180deg,var(--bg1),var(--bg2));
-    color:#e6eef9;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:32px;
-  }
-
-  /* container */
-  .card{
-    width:100%;
-    max-width:980px;
-    border-radius:20px;
-    padding:28px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    box-shadow: 0 8px 40px rgba(2,6,23,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
-    backdrop-filter: blur(8px) saturate(130%);
-    position:relative;
-    overflow:hidden;
-  }
-
-  /* decorative neon blobs */
-  .blob{
-    position:absolute;
-    filter: blur(60px) saturate(140%);
-    opacity:0.6;
-    pointer-events:none;
-    mix-blend-mode:screen;
-  }
-  .blob.a{width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,#7cf2ff 0%, #7cf2ff 35%, transparent 70%);left:-120px;top:-140px;}
-  .blob.b{width:360px;height:360px;border-radius:50%;background:radial-gradient(circle,#ff77d6 0%, #ff77d6 30%, transparent 65%);right:-100px;bottom:-160px;opacity:0.45}
-
-  header{
-    display:flex;
-    gap:18px;
-    align-items:center;
-    justify-content:space-between;
-    margin-bottom:18px;
-  }
-  .brand{
-    display:flex;gap:12px;align-items:center;
-  }
-  .logo{
-    width:64px;height:64px;border-radius:12px;
-    background:linear-gradient(135deg,var(--accent),var(--accent2));
-    display:flex;align-items:center;justify-content:center;
-    font-weight:700;font-size:22px;color:#04101a;
-    box-shadow: 0 6px 18px rgba(124,242,255,0.08), 0 2px 6px rgba(0,0,0,0.6);
-  }
-  .title{
-    line-height:1;
-  }
-  .title h1{margin:0;font-size:20px;letter-spacing:0.6px;}
-  .title p{margin:0;font-size:12px;color:var(--muted)}
-  nav{display:flex;gap:10px;align-items:center;}
-  .btn{
-    --pad:10px 14px;
-    background:transparent;border:1px solid rgba(255,255,255,0.06);
-    color:var(--accent);padding:var(--pad);border-radius:10px;font-weight:600;
-    cursor:pointer;font-size:13px;backdrop-filter: blur(4px);
-  }
-  .btn.ghost{color:var(--muted);border-style:dashed}
-  .btn.primary{
-    background:linear-gradient(90deg,var(--accent),var(--accent2));
-    color:#04101a;border:none;box-shadow:0 8px 30px rgba(124,242,255,0.06),0 2px 8px rgba(0,0,0,0.6);
-  }
-
-  /* hero area */
-  .hero{
-    display:grid;grid-template-columns:1fr 360px;gap:22px;align-items:stretch;
-  }
-  .hero-left{
-    padding:18px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.006));
-    border-radius:14px;border:1px solid rgba(255,255,255,0.02);
-  }
-  .hero-left h2{margin:6px 0 12px 0;font-size:28px}
-  .lead{color:var(--muted);margin-bottom:16px}
-  .features{display:flex;gap:12px;flex-wrap:wrap}
-  .chip{background:var(--glass);padding:8px 12px;border-radius:999px;font-weight:600;color:var(--accent);font-size:13px;border:1px solid rgba(255,255,255,0.02)}
-
-  /* rizz card */
-  .rizz-card{
-    background:linear-gradient(180deg, rgba(12,16,28,0.6), rgba(6,8,14,0.45));
-    border-radius:14px;padding:18px;border:1px solid rgba(255,255,255,0.03);
-    display:flex;flex-direction:column;gap:12px;align-items:stretch;
-  }
-  .meter{
-    height:18px;background:rgba(255,255,255,0.03);border-radius:999px;overflow:hidden;
-    position:relative;border:1px solid rgba(255,255,255,0.02)
-  }
-  .meter > i{
-    position:absolute;left:0;top:0;bottom:0;width:0%;
-    background:linear-gradient(90deg,var(--neon),var(--accent2));box-shadow:0 6px 20px rgba(139,255,193,0.08);
-    transition:width 950ms cubic-bezier(.2,.9,.2,1);
-  }
-  .rizz-score{display:flex;justify-content:space-between;align-items:center;font-weight:700}
-  .rizz-emoji{font-size:28px}
-
-  /* fake login modal (local-only) */
-  .modal{
-    position:fixed;inset:0;display:none;align-items:center;justify-content:center;
-    background:linear-gradient(180deg, rgba(2,6,23,0.6), rgba(2,6,23,0.75));
-    z-index:60;
-  }
-  .modal.show{display:flex}
-  .sheet{width:420px;background:linear-gradient(180deg, #071024, #04101a);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
-  .field{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
-  input[type="text"], input[type="password"]{
-    background:transparent;border:1px solid rgba(255,255,255,0.06);color:inherit;padding:10px;border-radius:8px;
-  }
-
-  /* footer */
-  footer{display:flex;justify-content:space-between;align-items:center;margin-top:18px;color:var(--muted);font-size:13px}
-  footer small{opacity:0.9}
-
-  /* responsive */
-  @media (max-width:920px){
-    .hero{grid-template-columns:1fr;}
-    .brand .logo{width:52px;height:52px}
-    .rizz-card{order:2}
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Client-side Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #222;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .login-box {
+      background: #333;
+      padding: 20px;
+      border-radius: 8px;
+      width: 300px;
+      text-align: center;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 4px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #00cc88;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      color: white;
+      font-size: 1em;
+    }
+    button:hover {
+      background: #009966;
+    }
+    .error {
+      color: red;
+      font-size: 0.9em;
+    }
+  </style>
 </head>
 <body>
-  <div class="card" role="main" aria-labelledby="main-title">
-    <div class="blob a" aria-hidden="true"></div>
-    <div class="blob b" aria-hidden="true"></div>
-
-    <header>
-      <div class="brand">
-        <div class="logo" aria-hidden="true">σ</div>
-        <div class="title">
-          <h1 id="main-title">Sigma Skibidi Rizz</h1>
-          <p>Playful demo • No external links • Self-contained</p>
-        </div>
-      </div>
-
-      <nav>
-        <button class="btn" id="open-about">About</button>
-        <button class="btn ghost" id="open-login" title="Local demo login (no network)">Login</button>
-        <button class="btn primary" id="measure-rizz">Measure Rizz</button>
-      </nav>
-    </header>
-
-    <section class="hero" aria-label="Main content">
-      <div class="hero-left">
-        <h2>Become the Sigma of your dreams</h2>
-        <p class="lead">This is a playful demo site mimicking the flashy style of meme landing pages. It intentionally contains <strong>no external links</strong>. All buttons either open internal sections or toggle UI.</p>
-
-        <div class="features" aria-hidden="true">
-          <div class="chip">Neon vibes</div>
-          <div class="chip">Rizz Meter</div>
-          <div class="chip">Local Login Demo</div>
-          <div class="chip">No external links</div>
-        </div>
-
-        <hr style="margin:18px 0;border:none;border-top:1px solid rgba(255,255,255,0.02)">
-
-        <div class="rizz-card" id="rizzCard" aria-live="polite">
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <div>
-              <div style="font-size:13px;color:var(--muted)">Rizz Score</div>
-              <div class="rizz-score"><strong id="rizzValue">—</strong><span class="rizz-emoji" id="rizzEmoji">🤔</span></div>
-            </div>
-            <div style="text-align:right;color:var(--muted);font-size:13px">Status: <span id="rizzStatus">idle</span></div>
-          </div>
-
-          <div class="meter" aria-hidden="true" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-            <i id="meterFill"></i>
-          </div>
-
-          <div style="display:flex;gap:8px;justify-content:space-between;align-items:center;margin-top:6px">
-            <input id="nameInput" type="text" placeholder="Enter nickname (optional)" style="flex:1;background:transparent;border:1px solid rgba(255,255,255,0.03);padding:8px;border-radius:8px;color:inherit">
-            <button class="btn primary" id="goMeasure" style="flex:0 0 auto">Go</button>
-          </div>
-        </div>
-
-      </div>
-
-      <aside style="display:flex;flex-direction:column;gap:14px">
-        <div class="rizz-card" style="align-items:center;justify-content:center;padding:22px">
-          <div style="font-size:13px;color:var(--muted);margin-bottom:8px">Rizz History (session)</div>
-          <div id="history" style="width:100%;min-height:120px;overflow:auto;background:rgba(0,0,0,0.12);padding:8px;border-radius:10px;color:var(--muted);font-size:13px;">
-            <div style="opacity:0.6">No measurements yet — try the Rizz Meter!</div>
-          </div>
-          <button class="btn ghost" id="clearHistory" style="margin-top:10px">Clear</button>
-        </div>
-
-        <div class="rizz-card" style="padding:14px">
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <div>
-              <div style="font-size:13px;color:var(--muted)">Local Login Demo</div>
-              <div style="font-weight:700">Simulate a user</div>
-            </div>
-            <div>
-              <button class="btn" id="open-login-2">Open</button>
-            </div>
-          </div>
-          <div style="margin-top:12px;color:var(--muted);font-size:13px">This is a client-side demo modal; it doesn't connect to any network or third-party. No links are used.</div>
-        </div>
-      </aside>
-    </section>
-
-    <footer>
-      <small>Built for fun · All local, no external links.</small>
-      <div style="display:flex;gap:10px">
-        <small style="color:var(--muted)">v1.0</small>
-      </div>
-    </footer>
+  <div class="login-box">
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <p id="error" class="error"></p>
   </div>
 
-  <!-- Modal (local demo login) -->
-  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-hidden="true">
-    <div class="sheet" role="document">
-      <h3 style="margin:0 0 8px 0">Local Login (demo)</h3>
-      <div class="field">
-        <label for="user">Username</label>
-        <input id="user" type="text" placeholder="Pick a nickname">
-      </div>
-      <div class="field">
-        <label for="pass">Password</label>
-        <input id="pass" type="password" placeholder="Secret (local only)">
-      </div>
-      <div style="display:flex;gap:8px;justify-content:flex-end">
-        <button class="btn" id="cancelLogin">Cancel</button>
-        <button class="btn primary" id="doLogin">Login</button>
-      </div>
-      <p style="color:var(--muted);font-size:13px;margin-top:12px">This demo stores the username in localStorage for the session only. It's not real authentication.</p>
-    </div>
-  </div>
+  <script>
+    // Dummy credentials (replace with secure backend in real apps ❗)
+    const USERNAME = "admin";
+    const PASSWORD = "1234";
 
-<script>
-  // ---- Utility & state ----
-  const meterFill = document.getElementById('meterFill');
-  const rizzValue = document.getElementById('rizzValue');
-  const rizzEmoji = document.getElementById('rizzEmoji');
-  const rizzStatus = document.getElementById('rizzStatus');
-  const historyEl = document.getElementById('history');
-  const nameInput = document.getElementById('nameInput');
+    function login() {
+      const user = document.getElementById("username").value;
+      const pass = document.getElementById("password").value;
+      const error = document.getElementById("error");
 
-  const modal = document.getElementById('modal');
-  const userInput = document.getElementById('user');
-  const passInput = document.getElementById('pass');
-
-  // store in session (not persisted between browser sessions unless you want)
-  let sessionHistory = [];
-
-  function clamp(v,min,max){ return Math.max(min, Math.min(max, v)); }
-
-  function updateMeter(percent){
-    percent = clamp(Math.round(percent), 0, 100);
-    meterFill.style.width = percent + '%';
-    rizzValue.textContent = percent + '%';
-    rizzStatus.textContent = percent < 30 ? 'low' : (percent < 70 ? 'medium' : 'sigma');
-    rizzEmoji.textContent = percent < 30 ? '😬' : (percent < 70 ? '😎' : '🧠');
-  }
-
-  function addHistory(name,percent){
-    const when = new Date().toLocaleTimeString();
-    sessionHistory.unshift({when,name,percent});
-    renderHistory();
-  }
-
-  function renderHistory(){
-    if(sessionHistory.length === 0){
-      historyEl.innerHTML = '<div style="opacity:0.6">No measurements yet — try the Rizz Meter!</div>';
-      return;
+      if (user === USERNAME && pass === PASSWORD) {
+        alert("Login successful ✅");
+        window.location.href = "home.html"; // redirect after login
+      } else {
+        error.textContent = "Invalid username or password ❌";
+      }
     }
-    historyEl.innerHTML = '';
-    sessionHistory.slice(0,12).forEach(it=>{
-      const el = document.createElement('div');
-      el.style.padding='8px';
-      el.style.borderBottom='1px dashed rgba(255,255,255,0.02)';
-      el.innerHTML = '<strong style="color:var(--accent)">'+(it.name||'Anon')+'</strong> — <span style="color:var(--muted)">'+it.when+'</span><div style="margin-top:6px;font-weight:700">'+it.percent+'%</div>';
-      historyEl.appendChild(el);
-    });
-  }
-
-  // ---- Rizz calculation (silly fun) ----
-  function measureRizz(seedName){
-    // deterministic-ish pseudo-random based on name + time
-    const now = Date.now();
-    let s = String(seedName || '') + '|' + String(Math.floor(now/30000)); // changes every 30s
-    // simple hash -> number
-    let h = 2166136261 >>> 0;
-    for(let i=0;i<s.length;i++){
-      h ^= s.charCodeAt(i);
-      h = Math.imul(h, 16777619) >>> 0;
-    }
-    // mix with some time-based randomness
-    const random = (h % 97) + ((now/1000)%13);
-    let percent = (random * 3.14159) % 100;
-    // nudge by keyboard input length etc
-    percent = Math.round(percent + (seedName ? seedName.length * 2 : 0));
-    percent = clamp(percent, 3, 99);
-    return percent;
-  }
-
-  // ---- event wiring ----
-  document.getElementById('measure-rizz').addEventListener('click', ()=>{
-    const name = nameInput.value.trim();
-    rizzStatus.textContent = 'measuring...';
-    // small async-like animation (pure client)
-    setTimeout(()=>{
-      const p = measureRizz(name);
-      updateMeter(p);
-      addHistory(name || 'Anon', p);
-      rizzStatus.textContent = 'done';
-    }, 300);
-  });
-
-  document.getElementById('goMeasure').addEventListener('click', ()=>{
-    document.getElementById('measure-rizz').click();
-  });
-
-  document.getElementById('clearHistory').addEventListener('click', ()=>{
-    sessionHistory = [];
-    renderHistory();
-  });
-
-  // modal handling (local-only)
-  function showModal(show=true){
-    modal.classList.toggle('show', show);
-    modal.setAttribute('aria-hidden', String(!show));
-    if(show) userInput.focus();
-  }
-  document.getElementById('open-login').addEventListener('click', ()=> showModal(true));
-  document.getElementById('open-login-2').addEventListener('click', ()=> showModal(true));
-  document.getElementById('cancelLogin').addEventListener('click', ()=> showModal(false));
-  document.getElementById('doLogin').addEventListener('click', ()=>{
-    // store demo username in localStorage (local-only; no network)
-    const name = userInput.value.trim();
-    if(!name){ alert('Pick a nickname to continue (demo).'); userInput.focus(); return; }
-    localStorage.setItem('sigma_demo_user', name);
-    showModal(false);
-    nameInput.value = name;
-    // show a fun measurement for new user
-    const p = measureRizz(name);
-    updateMeter(p);
-    addHistory(name, p);
-    // tiny toast (simple)
-    rizzStatus.textContent = 'logged-in (demo)';
-  });
-
-  // about button: open small info (internal)
-  document.getElementById('open-about').addEventListener('click', ()=>{
-    // small internal modal-like alert (no links)
-    const msg = [
-      'Sigma Skibidi Rizz — Demo',
-      '',
-      '• No external links or network requests.',
-      '• The Login is a local demo that stores a username in localStorage only.',
-      '• Rizz Meter is a playful, deterministic calculation based on nickname + time.',
-      '',
-      'Enjoy the vibes — tweak the code however you like!'
-    ].join('\\n');
-    alert(msg);
-  });
-
-  // initialize from any saved demo user
-  (function init(){
-    const saved = localStorage.getItem('sigma_demo_user');
-    if(saved){
-      nameInput.value = saved;
-      rizzStatus.textContent = 'demo user loaded';
-      // pre-run a measurement
-      const p = measureRizz(saved);
-      updateMeter(p);
-      addHistory(saved, p);
-    } else {
-      rizzStatus.textContent = 'idle';
-    }
-    renderHistory();
-  })();
-
-  // keyboard shortcut: press R to measure rizz
-  document.addEventListener('keydown', (ev)=>{
-    if(ev.key.toLowerCase() === 'r' && !ev.metaKey && !ev.ctrlKey){
-      document.getElementById('measure-rizz').click();
-    }
-    if(ev.key === 'Escape') showModal(false);
-  });
-
-  // ensure all buttons do not navigate — they are internal UI only
-  document.querySelectorAll('a').forEach(a => {
-    // (there are no anchors, but defensive)
-    a.addEventListener('click', e => e.preventDefault());
-  });
-
-</script>
+  </script>
 </body>
 </html>
