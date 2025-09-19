@@ -1,448 +1,412 @@
-<!DOCTYPE html>
-<html lang="en-US">
-  <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Sigma Skibidi Rizz — Demo (No External Links)</title>
+<style>
+  :root{
+    --bg1:#0f1226;
+    --bg2:#0b0d14;
+    --accent:#7cf2ff;
+    --accent2:#ff77d6;
+    --neon:#8affc1;
+    --muted:#9aa3b2;
+    --glass: rgba(255,255,255,0.04);
+  }
+  html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;}
+  body{
+    background: radial-gradient(1200px 600px at 10% 20%, rgba(124,242,255,0.04), transparent),
+                radial-gradient(1000px 500px at 90% 80%, rgba(255,119,214,0.04), transparent),
+                linear-gradient(180deg,var(--bg1),var(--bg2));
+    color:#e6eef9;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:32px;
+  }
 
-    <link rel="stylesheet" href="{{ '/assets/css/style.css?v=' | append: site.github.build_revision | relative_url }}">
-    {% include head-custom.html %}
-    {% seo %}
+  /* container */
+  .card{
+    width:100%;
+    max-width:980px;
+    border-radius:20px;
+    padding:28px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    box-shadow: 0 8px 40px rgba(2,6,23,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+    backdrop-filter: blur(8px) saturate(130%);
+    position:relative;
+    overflow:hidden;
+  }
 
-    <style>
-      .tab-buttons button {
-        padding: 10px 20px;
-        margin-right: 5px;
-        background-color: #444;
-        color: white;
-        border: none;
-        cursor: pointer;
-      }
+  /* decorative neon blobs */
+  .blob{
+    position:absolute;
+    filter: blur(60px) saturate(140%);
+    opacity:0.6;
+    pointer-events:none;
+    mix-blend-mode:screen;
+  }
+  .blob.a{width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,#7cf2ff 0%, #7cf2ff 35%, transparent 70%);left:-120px;top:-140px;}
+  .blob.b{width:360px;height:360px;border-radius:50%;background:radial-gradient(circle,#ff77d6 0%, #ff77d6 30%, transparent 65%);right:-100px;bottom:-160px;opacity:0.45}
 
-      .tab-buttons button:hover {
-        background-color: #666;
-      }
+  header{
+    display:flex;
+    gap:18px;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:18px;
+  }
+  .brand{
+    display:flex;gap:12px;align-items:center;
+  }
+  .logo{
+    width:64px;height:64px;border-radius:12px;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:22px;color:#04101a;
+    box-shadow: 0 6px 18px rgba(124,242,255,0.08), 0 2px 6px rgba(0,0,0,0.6);
+  }
+  .title{
+    line-height:1;
+  }
+  .title h1{margin:0;font-size:20px;letter-spacing:0.6px;}
+  .title p{margin:0;font-size:12px;color:var(--muted)}
+  nav{display:flex;gap:10px;align-items:center;}
+  .btn{
+    --pad:10px 14px;
+    background:transparent;border:1px solid rgba(255,255,255,0.06);
+    color:var(--accent);padding:var(--pad);border-radius:10px;font-weight:600;
+    cursor:pointer;font-size:13px;backdrop-filter: blur(4px);
+  }
+  .btn.ghost{color:var(--muted);border-style:dashed}
+  .btn.primary{
+    background:linear-gradient(90deg,var(--accent),var(--accent2));
+    color:#04101a;border:none;box-shadow:0 8px 30px rgba(124,242,255,0.06),0 2px 8px rgba(0,0,0,0.6);
+  }
 
-      .tab-content {
-        border-top: 1px solid #444;
-        padding: 20px;
-        background-color: #222;
-        color: white;
-        margin-bottom: 30px;
-      }
+  /* hero area */
+  .hero{
+    display:grid;grid-template-columns:1fr 360px;gap:22px;align-items:stretch;
+  }
+  .hero-left{
+    padding:18px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.006));
+    border-radius:14px;border:1px solid rgba(255,255,255,0.02);
+  }
+  .hero-left h2{margin:6px 0 12px 0;font-size:28px}
+  .lead{color:var(--muted);margin-bottom:16px}
+  .features{display:flex;gap:12px;flex-wrap:wrap}
+  .chip{background:var(--glass);padding:8px 12px;border-radius:999px;font-weight:600;color:var(--accent);font-size:13px;border:1px solid rgba(255,255,255,0.02)}
 
-      .module {
-        background-color: #333;
-        padding: 15px;
-        margin-bottom: 15px;
-        border-radius: 5px;
-      }
+  /* rizz card */
+  .rizz-card{
+    background:linear-gradient(180deg, rgba(12,16,28,0.6), rgba(6,8,14,0.45));
+    border-radius:14px;padding:18px;border:1px solid rgba(255,255,255,0.03);
+    display:flex;flex-direction:column;gap:12px;align-items:stretch;
+  }
+  .meter{
+    height:18px;background:rgba(255,255,255,0.03);border-radius:999px;overflow:hidden;
+    position:relative;border:1px solid rgba(255,255,255,0.02)
+  }
+  .meter > i{
+    position:absolute;left:0;top:0;bottom:0;width:0%;
+    background:linear-gradient(90deg,var(--neon),var(--accent2));box-shadow:0 6px 20px rgba(139,255,193,0.08);
+    transition:width 950ms cubic-bezier(.2,.9,.2,1);
+  }
+  .rizz-score{display:flex;justify-content:space-between;align-items:center;font-weight:700}
+  .rizz-emoji{font-size:28px}
 
-      .module h3 {
-        color: #00ffcc;
-        margin-top: 0;
-      }
+  /* fake login modal (local-only) */
+  .modal{
+    position:fixed;inset:0;display:none;align-items:center;justify-content:center;
+    background:linear-gradient(180deg, rgba(2,6,23,0.6), rgba(2,6,23,0.75));
+    z-index:60;
+  }
+  .modal.show{display:flex}
+  .sheet{width:420px;background:linear-gradient(180deg, #071024, #04101a);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+  .field{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+  input[type="text"], input[type="password"]{
+    background:transparent;border:1px solid rgba(255,255,255,0.06);color:inherit;padding:10px;border-radius:8px;
+  }
 
-      .download-btn {
-        display: inline-block;
-        padding: 10px 20px;
-        background-color: #00cc88;
-        color: white;
-        text-decoration: none;
-        border-radius: 4px;
-        margin-top: 10px;
-      }
+  /* footer */
+  footer{display:flex;justify-content:space-between;align-items:center;margin-top:18px;color:var(--muted);font-size:13px}
+  footer small{opacity:0.9}
 
-      .download-btn:hover {
-        background-color: #00aa77;
-      }
-
-      /* Forum thread styles */
-      .thread {
-        background-color: #333;
-        padding: 15px;
-        margin-bottom: 15px;
-        border-radius: 6px;
-        color: white;
-      }
-
-      .thread-title {
-        font-weight: bold;
-        font-size: 1.2em;
-        color: #00cc88;
-        text-decoration: none;
-        cursor: pointer;
-      }
-
-      .thread-title:hover {
-        text-decoration: underline;
-      }
-
-      .thread-meta {
-        font-size: 0.85em;
-        color: #aaa;
-        margin-bottom: 8px;
-      }
-
-      .thread-preview {
-        font-size: 1em;
-        color: #ddd;
-      }
-
-      /* Replies styling */
-      .thread-replies {
-        margin-top: 10px;
-        padding-left: 15px;
-        border-left: 2px solid #00cc88;
-        color: #ccc;
-      }
-
-      /* Subtab button styles - minimal, no background or color overrides */
-      .subtab-buttons button {
-        padding: 8px 16px;
-        margin-right: 5px;
-        border: none;
-        cursor: pointer;
-        border-radius: 4px;
-        background-color: transparent;
-        color: inherit;
-        font-weight: normal;
-        transition: all 0.2s ease;
-      }
-      .subtab-buttons button:hover {
-        text-decoration: underline;
-      }
-      .subtab-buttons button.active {
-        font-weight: bold;
-        text-decoration: underline;
-      }
-    </style>
-  </head>
-
-  <body>
+  /* responsive */
+  @media (max-width:920px){
+    .hero{grid-template-columns:1fr;}
+    .brand .logo{width:52px;height:52px}
+    .rizz-card{order:2}
+  }
+</style>
+</head>
+<body>
+  <div class="card" role="main" aria-labelledby="main-title">
+    <div class="blob a" aria-hidden="true"></div>
+    <div class="blob b" aria-hidden="true"></div>
 
     <header>
-      <div class="container">
-        <a id="a-title" href="{{ '/' | relative_url }}">
-          <h1>{{ site.title | default: site.github.repository_name }}</h1>
-        </a>
-        <h2>{{ site.description | default: site.github.project_tagline }}</h2>
-
-        <section id="downloads">
-          {% if site.show_downloads %}
-            <a href="{{ site.github.zip_url }}" class="btn">Download as .zip</a>
-            <a href="{{ site.github.tar_url }}" class="btn">Download as .tar.gz</a>
-          {% endif %}
-          <a href="{{ site.github.repository_url }}" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
-        </section>
+      <div class="brand">
+        <div class="logo" aria-hidden="true">σ</div>
+        <div class="title">
+          <h1 id="main-title">Sigma Skibidi Rizz</h1>
+          <p>Playful demo • No external links • Self-contained</p>
+        </div>
       </div>
+
+      <nav>
+        <button class="btn" id="open-about">About</button>
+        <button class="btn ghost" id="open-login" title="Local demo login (no network)">Login</button>
+        <button class="btn primary" id="measure-rizz">Measure Rizz</button>
+      </nav>
     </header>
 
-    <!-- ✅ INSERT TABS BELOW HEADER -->
-    <div class="container">
-      <div class="tab-container">
-        <div class="tab-buttons">
-          <button onclick="openTab('tab1')">Home</button>
-          <button onclick="openTab('tab2')">Cheats</button>
-          <button onclick="openTab('tab3')">Contact</button>
-          <button onclick="openTab('tab4')">About Us</button>
-          <button onclick="openTab('tab5')">ReVaced manager</button>
-          <button onclick="openTab('tab6')">YouTube++(Apple Iphone)</button>
+    <section class="hero" aria-label="Main content">
+      <div class="hero-left">
+        <h2>Become the Sigma of your dreams</h2>
+        <p class="lead">This is a playful demo site mimicking the flashy style of meme landing pages. It intentionally contains <strong>no external links</strong>. All buttons either open internal sections or toggle UI.</p>
+
+        <div class="features" aria-hidden="true">
+          <div class="chip">Neon vibes</div>
+          <div class="chip">Rizz Meter</div>
+          <div class="chip">Local Login Demo</div>
+          <div class="chip">No external links</div>
         </div>
 
-        <div id="tab1" class="tab-content" style="display: block;">
-          <h2>Community Forum</h2>
+        <hr style="margin:18px 0;border:none;border-top:1px solid rgba(255,255,255,0.02)">
 
-          <div class="thread">
-            <a href="javascript:void(0)" class="thread-title" onclick="toggleReplies(this)">How to start Memesense???</a>
-            <div class="thread-meta">Started by <strong>Sigma</strong> — July 1, 2025</div>
-            <p class="thread-preview">How to start Memesense???</p>
-            <div class="thread-replies" style="display:none;">
-              <p><strong>Reply from Admin:Kalata :</strong> There are 2 files loader and dll you open the loader then open extreme injector v3 and inject the dll then make new account in memesense.gg then enter the details in the memesense loader.</p>
-              <p><strong>Reply from Sigma:</strong> Thanks bro appreciate that!!!</p>
+        <div class="rizz-card" id="rizzCard" aria-live="polite">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div style="font-size:13px;color:var(--muted)">Rizz Score</div>
+              <div class="rizz-score"><strong id="rizzValue">—</strong><span class="rizz-emoji" id="rizzEmoji">🤔</span></div>
             </div>
+            <div style="text-align:right;color:var(--muted);font-size:13px">Status: <span id="rizzStatus">idle</span></div>
           </div>
 
-          <div class="thread">
-            <a href="javascript:void(0)" class="thread-title" onclick="toggleReplies(this)">Best settings for wallhack</a>
-            <div class="thread-meta">Started by <strong>ProGamer</strong> — June 30, 2025</div>
-            <p class="thread-preview">Which settings give the best visibility without detection?</p>
-            <div class="thread-replies" style="display:none;">
-              <p><strong>Reply from ExpertGamer:</strong> Use the low contrast filter and enable edge highlight.</p>
-              <p><strong>Reply from ProGamer:</strong> Thanks! That helped a lot.</p>
-            </div>
+          <div class="meter" aria-hidden="true" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+            <i id="meterFill"></i>
           </div>
 
-          <div class="thread">
-            <a href="javascript:void(0)" class="thread-title" onclick="toggleReplies(this)">New cheats for upcoming update?</a>
-            <div class="thread-meta">Started by <strong>Admin</strong> — June 28, 2025</div>
-            <p class="thread-preview">Will there be new cheats compatible with the next Warzone patch?</p>
-            <div class="thread-replies" style="display:none;">
-              <p><strong>Reply from DevTeam:</strong> Yes, we are working on updates for the new patch.</p>
-              <p><strong>Reply from Admin:</strong> Looking forward to it!</p>
-            </div>
+          <div style="display:flex;gap:8px;justify-content:space-between;align-items:center;margin-top:6px">
+            <input id="nameInput" type="text" placeholder="Enter nickname (optional)" style="flex:1;background:transparent;border:1px solid rgba(255,255,255,0.03);padding:8px;border-radius:8px;color:inherit">
+            <button class="btn primary" id="goMeasure" style="flex:0 0 auto">Go</button>
           </div>
         </div>
 
-        <!-- Cheats tab with subtabs -->
-        <div id="tab2" class="tab-content" style="display:none;">
-          <h2>Cheats Section</h2>
+      </div>
 
-          <!-- Subtab buttons -->
-          <div class="subtab-buttons" style="margin-bottom: 15px;">
-            <button id="btn-cs2" onclick="openSubTab('cs2')" class="active">CS2 Cheats</button>
-            <button id="btn-csgo" onclick="openSubTab('csgo')">CSGO Cheats</button>
-            <button id="btn-minecraft" onclick="openSubTab('minecraft')">Minecraft Clients</button>
-            <button id="btn-injectors" onclick="openSubTab('injectors')">Injectors and Loaders</button>
-            <button id="btn-txtpacks" onclick="openSubTab('txtpacks')">txt Packs</button>
+      <aside style="display:flex;flex-direction:column;gap:14px">
+        <div class="rizz-card" style="align-items:center;justify-content:center;padding:22px">
+          <div style="font-size:13px;color:var(--muted);margin-bottom:8px">Rizz History (session)</div>
+          <div id="history" style="width:100%;min-height:120px;overflow:auto;background:rgba(0,0,0,0.12);padding:8px;border-radius:10px;color:var(--muted);font-size:13px;">
+            <div style="opacity:0.6">No measurements yet — try the Rizz Meter!</div>
           </div>
-
-          <!-- Subtab contents -->
-          <div id="cs2" class="subtab-content">
-            <div class="module">
-              <h3>AimWare for cs2</h3>
-              <p>The Latest crack of the premium software Aimware.</p>
-              <a href="https://cold4.gofile.io/download/web/973ea560-c4f7-47ae-b473-a7c79679b531/Aimware(1).zip" class="download-btn">Download Aimware</a>
-            </div>
-
-           <div class="module">
-              <h3>Memesense</h3>
-              <p>The best semi rage cheat</p>
-              <a href="https://store-eu-par-3.gofile.io/download/web/fb082c8e-fa2f-44f6-8545-006efd63fef8/MemeSense.zip" class="download-btn">Download Memesense</a>
-            </div>
-          </div>
-
-          <div id="csgo" class="subtab-content" style="display:none;">
-            <div class="module">
-              <h3>Otc v2</h3>
-              <p>OneTap v2 csgo by anonteam1337.</p>
-              <a href="https://store8.gofile.io/download/web/a0fe4601-2668-4d13-99f4-a03e0a36e898/otc%20csgo(1).dll" class="download-btn">Download Otc v2</a>
-            </div>
-
-            <div class="module">
-              <h3>Primordial</h3>
-              <p>Good cheat ,but need luas</p>
-              <a href="https://cold1.gofile.io/download/web/c3dab1dd-71a2-4fa6-ac65-c7d54234eed4/primordial.rar" class="download-btn">Download Primordial</a>
-            </div>
-
-            <div class="module">
-              <h3>Skeet.cc</h3>
-              <p>The 2nd best cheat after Neverlose.cc</p>
-              <a href="https://cold5.gofile.io/download/web/a12c28f8-0001-4a67-a60f-c940247709e9/skeet.rar" class="download-btn">Download Skeet.cc</a>
-            </div>
-
-            <div class="module">
-              <h3>Wreakin'Havoc</h3>
-              <p>One of the most legendary cheats for csgo</p>
-              <a href="https://store5.gofile.io/download/web/993bad90-a0f5-46a7-8d8c-1a233c95ce56/wreakhavoc_online.dll" class="download-btn">Download Wreakin'Havoc</a>
-            </div>
-          </div>
-
-          <div id="minecraft" class="subtab-content" style="display:none;">
-            <div class="module">
-              <h3>Minecraft Client 1</h3>
-              <p>The best client for its years(2k20)</p>
-              <a href="https://cold1.gofile.io/download/web/e8132aac-fc7a-4eeb-828e-01d8201cf7a7/Exhibition-Fixed.zip" class="download-btn">Download Minecraft Client 1</a>
-            </div>
-            <div class="module">
-              <h3>Raven B++ Essential</h3>
-              <p>Required for running B++ series</p>
-              <a href="https://cold2.gofile.io/download/web/86b2628b-3a79-445a-9213-5bfc1b1f08c2/Essential-forge_1-8-9(required).jar" class="download-btn">Download Raven B++ Essential</a>
-            </div>
-            <div class="module">
-              <h3>Raven B++ Sigmas</h3>
-              <p>Just like dev just more stable made by sigmaclientwastaken.Was supposed to be merged into stable but the client got archived. This bit more bug free than stable and has the old ui</p>
-              <a href="https://cold1.gofile.io/download/web/e50bb90b-7ba4-4f59-98ca-614647a0823a/%5B1.8.9%5D%20BetterKeystrokes%20V-1.2.jar" class="download-btn">Download Raven B++ sigmas</a>
-            </div>
-            <div class="module">
-              <h3>Raven B++ Stable</h3>
-              <p>The most stable branch with most features</p>
-              <a href="https://cold-eu-agl-1.gofile.io/download/web/a640ea9e-de17-485e-a780-8d677a03f0c2/%5B1.8.9%5D%20BetterKeystrokes%20V-1.2(1).jar" class="download-btn">Download Raven Stable</a>
-            </div>
-            <div class="module">
-              <h3>Liquid Bounce</h3>
-              <p>One of the best anarchy cheats.</p>
-              <a href="https://store7.gofile.io/download/web/93fcce47-33cd-42e0-a3ad-9756826e2a6a/LiquidLauncher_0.5.0_x64_en-US.msi" class="download-btn">Download Liquid bounce</a>
-            </div>
-            <div class="module">
-              <h3>Meteor</h3>
-              <p>The best chit for duping on 2p2t.org for rn</p>
-              <a href="https://store5.gofile.io/download/web/aed60e81-29e2-4fe5-989e-ccc1e769d81e/meteor-client-0.5.8(1).jar" class="download-btn">Download Meteor</a>
-            </div>
-            <div class="module">
-              <h3>Trouser Streak Addon for Meteor</h3>
-              <p>The best Griefing addon for meteor</p>
-              <a href="https://store-eu-par-2.gofile.io/download/web/e1cd444b-972f-4582-b97a-9bca9947c054/2trouser-streak-1.3.9-1.21.1.jar" class="download-btn">Download Trouser Streak</a>
-            </div>
-            <div class="module">
-              <h3>Prestige</h3>
-              <p>The best ghost client for Crystal pvp(legit)</p>
-              <a href="https://cold1.gofile.io/download/web/90e7c691-c354-4ada-845d-8b4883e0c185/Prestige%20%2B%20Libs%20hackvshack.net.zip" class="download-btn">Download Prestige</a>
-            </div>
-            <div class="module">
-              <h3>Raven B+++</h3>
-              <p>Basically Raven B++ stable but more safe</p>
-              <a href="https://cold-eu-agl-1.gofile.io/download/web/b95526bd-3c79-472e-9111-2228430dd4f7/Raven%20B%2B%2B%2B.jar" class="download-btn">Download Raven B+++</a>
-            </div>
-            <div class="module">
-              <h3>Raven XD</h3>
-              <p>Basically XD</p>
-              <a href="https://cold5.gofile.io/download/web/dd612847-4ba8-4ab7-a5e1-ac027977c6ee/raven-XD.jar" class="download-btn">Download Raven XD</a>
-            </div>
-            <div class="module">
-              <h3>Rise</h3>
-              <p>Rise client is one of the best clients made for 1.8.9 blatant cheating</p>
-              <a href="https://store5.gofile.io/download/web/b86e5ca6-77e3-46fd-a749-04d23dcdf165/Rise%20v6%20New.zip" class="download-btn">Download Rise</a>
-            </div>
-            <div class="module">
-              <h3>RusherHack 1.21.1</h3>
-              <p>The best anarchy cheat ever made</p>
-              <a href="https://store-eu-par-2.gofile.io/download/web/af2476f3-5d71-4362-98c8-cb07e7f55c1e/rushercrack-2.0.jar" class="download-btn">Download RusherHack</a>
-            </div>
-            <!-- Extra Minecraft Client download button -->
-            <div class="module">
-              <h3>Vape v4.17</h3>
-              <p>Vape crack but laggy asf</p>
-              <a href="https://cold-na-phx-7.gofile.io/download/web/90090c63-91f4-4806-94a4-2470001ff556/vape%20v4.17.dll" class="download-btn">Download Vape v4.17</a>
-            </div>
-          </div>
-
-          <div id="injectors" class="subtab-content" style="display:none;">
-            <div class="module">
-              <h3>Extreme injector v3</h3>
-              <p>We do not promote the use of cheats or software that violate the terms of service of games or platforms.</p>
-              <p>it can inject in almost every game</p>
-              <a href="https://cold-na-phx-4.gofile.io/download/web/a1569f16-fb70-4fdb-a153-08caca8941eb/Extreme%20Injector%20v3.exe" class="download-btn">Download Extreme injector v3</a>
-            </div>
-            <div class="module">
-              <h3>fate injector</h3>
-              <p>Injector for for minecraft bedrock</p>
-              <a href="https://cold-na-phx-6.gofile.io/download/web/ab1040ef-b4ae-4ae5-b11a-2361f5de9bd3/FateInjector.exe" class="download-btn">Download Fate injector</a>
-            </div>
-            <!-- New download button -->
-            <div class="module">
-              <h3>Exloader.net</h3>
-              <p>Exloader but fast and easy access</p>
-              <a href="https://cold8.gofile.io/download/web/d3cb6993-9cda-4431-8162-05a3cd531851/ExLoader_Installer(1).exe" class="download-btn">Download Exloader</a>
-            </div>
-          </div>
-
-          <div id="txtpacks" class="subtab-content" style="display:none;">
-            <div class="module">
-              <h3>Storm Fault 16x 1.8.9</h3>
-              <p>Minecraft 1.8.9 bedwars pvp texture pack. And FPS boost</p>
-              <a href="https://cold8.gofile.io/download/web/f9a298c4-798d-4101-8c9a-53e44c4f3908/%C2%A73StormFault%20%C2%A77%5B%C2%A7f16x%C2%A77%5D%20%C2%A78.zip" class="download-btn">Download Storm Fault 16x</a>
-            </div>
-            <div class="module">
-              <h3>Void Clan 6b6t.org</h3>
-              <p>Another text pack for users.</p>
-              <a href="https://store5.gofile.io/download/web/8da44c57-40fa-4f42-9688-ab619a900a3b/Dissolve.zip" class="download-btn">Download Void Clan 6b6t.org</a>
-            </div>
-          </div>
-
+          <button class="btn ghost" id="clearHistory" style="margin-top:10px">Clear</button>
         </div>
-        <div id="tab3" class="tab-content" style="display:none;">
-          <h2>Contact Us</h2>
-          <p>Discord: ligmacheat</p>
-        </div>
-        
-        </div>
-        <div id="tab4" class="tab-content" style="display:none;">
-          <h2>About Us</h2>
-          <p>We've done this site for easy access for cheating content.We will make other content but for now its just that for everyone thats using this site. Thanks!</p>
-        </div>
-      
-      <div id="injectors" class="subtab-content" style="display:none;">
-            <div class="module">
-              <h3>Revaced Manager/h3>
-              <p>We do not promote the use of cheats or software that violate the terms of service of games or platforms.</p>
-              <p>it can inject in almost every game</p>
-              <a href="https://cold-na-phx-4.gofile.io/download/web/a1569f16-fb70-4fdb-a153-08caca8941eb/Extreme%20Injector%20v3.exe" class="download-btn">Download Extreme injector v3</a>
+
+        <div class="rizz-card" style="padding:14px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div style="font-size:13px;color:var(--muted)">Local Login Demo</div>
+              <div style="font-weight:700">Simulate a user</div>
             </div>
-      
-    
-    <script>
-      // Tabs function
-      function openTab(tabName) {
-        const tabs = document.querySelectorAll('.tab-content');
-        tabs.forEach(tab => {
-          tab.style.display = 'none';
-        });
-        document.getElementById(tabName).style.display = 'block';
-      }
+            <div>
+              <button class="btn" id="open-login-2">Open</button>
+            </div>
+          </div>
+          <div style="margin-top:12px;color:var(--muted);font-size:13px">This is a client-side demo modal; it doesn't connect to any network or third-party. No links are used.</div>
+        </div>
+      </aside>
+    </section>
 
-      // Subtabs function inside Cheats
-      function openSubTab(subTabName) {  	            
-        const subTabs = document.querySelectorAll('.subtab-content');
-        subTabs.forEach(st => {
-          st.style.display = 'none';
-        });
-        document.getElementById(subTabName).style.display = 'block';
+    <footer>
+      <small>Built for fun · All local, no external links.</small>
+      <div style="display:flex;gap:10px">
+        <small style="color:var(--muted)">v1.0</small>
+      </div>
+    </footer>
+  </div>
 
-        // Remove 'active' from all buttons, add to clicked
-        const buttons = document.querySelectorAll('.subtab-buttons button');
-        buttons.forEach(btn => btn.classList.remove('active'));
-        document.getElementById('btn-' + subTabName).classList.add('active');
-      }
+  <!-- Modal (local demo login) -->
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="sheet" role="document">
+      <h3 style="margin:0 0 8px 0">Local Login (demo)</h3>
+      <div class="field">
+        <label for="user">Username</label>
+        <input id="user" type="text" placeholder="Pick a nickname">
+      </div>
+      <div class="field">
+        <label for="pass">Password</label>
+        <input id="pass" type="password" placeholder="Secret (local only)">
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end">
+        <button class="btn" id="cancelLogin">Cancel</button>
+        <button class="btn primary" id="doLogin">Login</button>
+      </div>
+      <p style="color:var(--muted);font-size:13px;margin-top:12px">This demo stores the username in localStorage for the session only. It's not real authentication.</p>
+    </div>
+  </div>
 
-      // New: Toggle replies under forum threads
-      function toggleReplies(element) {
-        const threadDiv = element.closest('.thread');
-        if (!threadDiv) return;
+<script>
+  // ---- Utility & state ----
+  const meterFill = document.getElementById('meterFill');
+  const rizzValue = document.getElementById('rizzValue');
+  const rizzEmoji = document.getElementById('rizzEmoji');
+  const rizzStatus = document.getElementById('rizzStatus');
+  const historyEl = document.getElementById('history');
+  const nameInput = document.getElementById('nameInput');
 
-        const replies = threadDiv.querySelector('.thread-replies');
-        if (!replies) return;
+  const modal = document.getElementById('modal');
+  const userInput = document.getElementById('user');
+  const passInput = document.getElementById('pass');
 
-        if (replies.style.display === 'none' || replies.style.display === '') {
-          replies.style.display = 'block';
-        } else {
-          replies.style.display = 'none';
-        }
-      }
-    </script>
+  // store in session (not persisted between browser sessions unless you want)
+  let sessionHistory = [];
 
-  </body>
-        <script type="module">
+  function clamp(v,min,max){ return Math.max(min, Math.min(max, v)); }
 
-  // Import the functions you need from the SDKs you need
+  function updateMeter(percent){
+    percent = clamp(Math.round(percent), 0, 100);
+    meterFill.style.width = percent + '%';
+    rizzValue.textContent = percent + '%';
+    rizzStatus.textContent = percent < 30 ? 'low' : (percent < 70 ? 'medium' : 'sigma');
+    rizzEmoji.textContent = percent < 30 ? '😬' : (percent < 70 ? '😎' : '🧠');
+  }
 
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+  function addHistory(name,percent){
+    const when = new Date().toLocaleTimeString();
+    sessionHistory.unshift({when,name,percent});
+    renderHistory();
+  }
 
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-analytics.js";
+  function renderHistory(){
+    if(sessionHistory.length === 0){
+      historyEl.innerHTML = '<div style="opacity:0.6">No measurements yet — try the Rizz Meter!</div>';
+      return;
+    }
+    historyEl.innerHTML = '';
+    sessionHistory.slice(0,12).forEach(it=>{
+      const el = document.createElement('div');
+      el.style.padding='8px';
+      el.style.borderBottom='1px dashed rgba(255,255,255,0.02)';
+      el.innerHTML = '<strong style="color:var(--accent)">'+(it.name||'Anon')+'</strong> — <span style="color:var(--muted)">'+it.when+'</span><div style="margin-top:6px;font-weight:700">'+it.percent+'%</div>';
+      historyEl.appendChild(el);
+    });
+  }
 
-  // TODO: Add SDKs for Firebase products that you want to use
+  // ---- Rizz calculation (silly fun) ----
+  function measureRizz(seedName){
+    // deterministic-ish pseudo-random based on name + time
+    const now = Date.now();
+    let s = String(seedName || '') + '|' + String(Math.floor(now/30000)); // changes every 30s
+    // simple hash -> number
+    let h = 2166136261 >>> 0;
+    for(let i=0;i<s.length;i++){
+      h ^= s.charCodeAt(i);
+      h = Math.imul(h, 16777619) >>> 0;
+    }
+    // mix with some time-based randomness
+    const random = (h % 97) + ((now/1000)%13);
+    let percent = (random * 3.14159) % 100;
+    // nudge by keyboard input length etc
+    percent = Math.round(percent + (seedName ? seedName.length * 2 : 0));
+    percent = clamp(percent, 3, 99);
+    return percent;
+  }
 
-  // https://firebase.google.com/docs/web/setup#available-libraries
+  // ---- event wiring ----
+  document.getElementById('measure-rizz').addEventListener('click', ()=>{
+    const name = nameInput.value.trim();
+    rizzStatus.textContent = 'measuring...';
+    // small async-like animation (pure client)
+    setTimeout(()=>{
+      const p = measureRizz(name);
+      updateMeter(p);
+      addHistory(name || 'Anon', p);
+      rizzStatus.textContent = 'done';
+    }, 300);
+  });
 
+  document.getElementById('goMeasure').addEventListener('click', ()=>{
+    document.getElementById('measure-rizz').click();
+  });
 
-  // Your web app's Firebase configuration
+  document.getElementById('clearHistory').addEventListener('click', ()=>{
+    sessionHistory = [];
+    renderHistory();
+  });
 
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  // modal handling (local-only)
+  function showModal(show=true){
+    modal.classList.toggle('show', show);
+    modal.setAttribute('aria-hidden', String(!show));
+    if(show) userInput.focus();
+  }
+  document.getElementById('open-login').addEventListener('click', ()=> showModal(true));
+  document.getElementById('open-login-2').addEventListener('click', ()=> showModal(true));
+  document.getElementById('cancelLogin').addEventListener('click', ()=> showModal(false));
+  document.getElementById('doLogin').addEventListener('click', ()=>{
+    // store demo username in localStorage (local-only; no network)
+    const name = userInput.value.trim();
+    if(!name){ alert('Pick a nickname to continue (demo).'); userInput.focus(); return; }
+    localStorage.setItem('sigma_demo_user', name);
+    showModal(false);
+    nameInput.value = name;
+    // show a fun measurement for new user
+    const p = measureRizz(name);
+    updateMeter(p);
+    addHistory(name, p);
+    // tiny toast (simple)
+    rizzStatus.textContent = 'logged-in (demo)';
+  });
 
-  const firebaseConfig = {
+  // about button: open small info (internal)
+  document.getElementById('open-about').addEventListener('click', ()=>{
+    // small internal modal-like alert (no links)
+    const msg = [
+      'Sigma Skibidi Rizz — Demo',
+      '',
+      '• No external links or network requests.',
+      '• The Login is a local demo that stores a username in localStorage only.',
+      '• Rizz Meter is a playful, deterministic calculation based on nickname + time.',
+      '',
+      'Enjoy the vibes — tweak the code however you like!'
+    ].join('\\n');
+    alert(msg);
+  });
 
-    apiKey: "AIzaSyDy13Uk2PAeQ7iDZkpLL0dRHun8ohGCWxc",
+  // initialize from any saved demo user
+  (function init(){
+    const saved = localStorage.getItem('sigma_demo_user');
+    if(saved){
+      nameInput.value = saved;
+      rizzStatus.textContent = 'demo user loaded';
+      // pre-run a measurement
+      const p = measureRizz(saved);
+      updateMeter(p);
+      addHistory(saved, p);
+    } else {
+      rizzStatus.textContent = 'idle';
+    }
+    renderHistory();
+  })();
 
-    authDomain: "ligmacheatsnet.firebaseapp.com",
+  // keyboard shortcut: press R to measure rizz
+  document.addEventListener('keydown', (ev)=>{
+    if(ev.key.toLowerCase() === 'r' && !ev.metaKey && !ev.ctrlKey){
+      document.getElementById('measure-rizz').click();
+    }
+    if(ev.key === 'Escape') showModal(false);
+  });
 
-    projectId: "ligmacheatsnet",
-
-    storageBucket: "ligmacheatsnet.firebasestorage.app",
-
-    messagingSenderId: "705689053214",
-
-    appId: "1:705689053214:web:f1cc4491c74a1354a9e60f",
-
-    measurementId: "G-1TCL4YHK9R"
-
-  };
-
-
-  // Initialize Firebase
-
-  const app = initializeApp(firebaseConfig);
-
-  const analytics = getAnalytics(app);
+  // ensure all buttons do not navigate — they are internal UI only
+  document.querySelectorAll('a').forEach(a => {
+    // (there are no anchors, but defensive)
+    a.addEventListener('click', e => e.preventDefault());
+  });
 
 </script>
+</body>
 </html>
